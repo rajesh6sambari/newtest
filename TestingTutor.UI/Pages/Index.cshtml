@@ -1,0 +1,80 @@
+﻿@page
+@using UI.Pages
+@model UI.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@{
+    HttpContext.Request.Cookies.TryGetValue("testingtutor.org.Theme", out var theme);
+
+    var image = "images/blue-retro.png";
+
+    switch (theme)
+    {
+        case "default":
+        case "cerulean":
+        case "cosmo":
+        case "flatly":
+        case "journal":
+        case "litera":
+        case "lumen":
+        case "lux":
+        case "materia":
+        case "minty":
+        case "pulse":
+        case "sandstone":
+        case "simplex":
+        case "sketchy":
+        case "spacelab":
+        case "united":
+        case "yeti":
+            image = "images/blue-retro.png";
+            break;
+        case "cyborg":
+        case "darkly":
+        case "slate":
+        case "solar":
+        case "superhero":
+            image = "images/white-retro.png";
+            break;
+        default:
+            break;
+    }
+}
+
+
+@*<div class="container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <img src="@image" alt="" class="img-fluid">
+            </div>
+        </div>
+    </div>*@
+
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="">
+        <h1 class="display-4 font-weight-normal">What is Testing Tutor?</h1>
+        <p class="lead font-weight-normal">Testing Tutor is a software engineering education testing tool that is designed to help students learn to become more effective testers (achieving greater code coverage and fewer test redundancies).  The tool identifies the testing concepts that are attributable to missing test cases by comparing them against either the reference implementation or the student’s implementation.  </p>
+    </div>
+</div>
+
+<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+    <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
+        <div class="my-3 py-3">
+            <h2 class="display-5">Learning Mode</h2>
+            <p class="lead">In Learning Mode, Testing Tutor teaches a student how to develop a complete test suite for a reference implementation of a program.</p>
+        </div>
+    </div>
+    <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+        <div class="my-3 p-3">
+            <h2 class="display-5">Development Mode</h2>
+            <p class="lead">In Development Mode, Testing Tutor helps a student completely test their newly written code.</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+

@@ -1,0 +1,58 @@
+﻿@page
+@model TestingTutor.UI.Pages.Submissions.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Submission</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Submission.SubmitterId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Submission.SubmitterId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Submission.Assignment)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Submission.Assignment.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Submission.ApplicationMode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Submission.ApplicationMode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Submission.Feedback)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Submission.Feedback.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Submission.SubmitterSolution)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Submission.SubmitterSolution)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Submission.SubmitterTestCaseSolution)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Submission.SubmitterTestCaseSolution)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Submission.Id" />
+        <input type="submit" value="Delete" class="btn btn-primary text-light" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

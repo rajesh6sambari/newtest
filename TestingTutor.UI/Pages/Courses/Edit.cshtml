@@ -1,0 +1,137 @@
+﻿@page
+@model TestingTutor.UI.Pages.Courses.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit Course</h2>
+
+
+<hr />
+<form method="post">
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Course.Id" />
+            <div class="form-group">
+                <label asp-for="Course.CourseName" ></label>
+                <input asp-for="Course.CourseName" class="form-control" />
+                <span asp-validation-for="Course.CourseName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Course.TermId" ></label>
+                <select asp-for="Course.TermId" class="form-control" asp-items="ViewBag.TermId"></select>
+                <span asp-validation-for="Course.TermId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Course.IsPublished" ></label>
+                @Html.CheckBoxFor(m => m.Course.IsPublished)
+                <span asp-validation-for="Course.IsPublished" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Course.IsArchived" ></label>
+                @Html.CheckBoxFor(m => m.Course.IsArchived)
+                <span asp-validation-for="Course.IsArchived" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.Course.InstitutionId)
+    <br />
+    <hr />
+    <h2>Instructors at @Model.Course.Institution.Name</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Enroll
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Instructors[0].FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Instructors[0].LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Instructors[0].Email)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Instructors.Count; ++i)
+            {
+                <tr>
+                    <td>
+                        @Html.CheckBoxFor(m => m.Instructors[i].IsChecked)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Instructors[i].FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Instructors[i].LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Instructors[i].Email)
+                        @Html.HiddenFor(m => m.Instructors[i].Email)
+                        @Html.HiddenFor(m => m.Instructors[i].UserId)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+    <hr />
+    <h2>Students at @Model.Course.Institution.Name</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Enroll
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Students[0].Email)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Students.Count; ++i)
+            {
+                <tr>
+                    <td>
+                        @Html.CheckBoxFor(m => m.Students[i].IsChecked)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Students[i].FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Students[i].LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => m.Students[i].Email)
+                        @Html.HiddenFor(m => m.Students[i].Email)
+                        @Html.HiddenFor(m => m.Students[i].UserId)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary text-light" />
+
+    </div>
+</form>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

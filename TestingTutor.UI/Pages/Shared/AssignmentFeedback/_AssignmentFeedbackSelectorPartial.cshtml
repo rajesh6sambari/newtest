@@ -1,0 +1,38 @@
+﻿@using TestingTutor.UI.Data.ViewModels
+@inject AssignmentFeedbackViewModel ViewModel
+
+@if (ViewModel.Submission.Feedback == null)
+{
+    <p>
+        In progress...
+    </p>
+}
+else if (ViewModel.Submission.Feedback.EngineException != null)
+{
+    @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackEngineExceptionPartial", ViewModel.Submission.Feedback.EngineException)
+}
+else if (ViewModel.FeedbackLevel == "Detailed Feedback")
+{
+    @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackDetailedPartial", ViewModel.Submission.Feedback);
+}
+else
+{
+    @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackProgressPartial");
+    if (ViewModel.FeedbackLevel == "Conceptual Feedback")
+    {
+        @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackConceptualPartial", ViewModel.Submission.Feedback);
+    }
+    else if (ViewModel.FeedbackLevel == "Conceptual - Task")
+    {
+        @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackTaskPartial");
+    }
+    else if (ViewModel.FeedbackLevel == "Conceptual - Process")
+    {
+        @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackProcessPartial");
+    }
+    else if (ViewModel.FeedbackLevel == "Conceptual - Self-regulating")
+    {
+        @await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackSelfPartial");
+    }
+
+}

@@ -1,0 +1,88 @@
+﻿@using TestingTutor.UI.Data.ViewModels
+@inject AssignmentFeedbackViewModel ViewModel
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Submission #</th>
+        <th>Submitted</th>
+        <th>Mode</th>
+        <th>Tests Covered (%)</th>
+    </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < ViewModel.Submissions.Count; ++i)
+        {
+            var submission = ViewModel.Submissions[i];
+            <tr>
+                <td>
+                    @(i + 1)
+                </td>  
+                @if (ViewModel.Index == i)
+                {
+                    <td class="table-primary">
+                        <a asp-page="./AssignmentFeedback" asp-route-index="@i"
+                           asp-route-id="@submission.AssignmentId">
+                            @submission.SubmissionDateTime
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-page="./AssignmentFeedback" asp-route-index="@i"
+                           asp-route-id="@submission.AssignmentId">
+                            @submission.SubmissionDateTime
+                        </a>
+                    </td>
+                }
+                <td>
+                    @submission.ApplicationMode
+                </td>
+                @{
+                    var feedback = ViewModel.Submissions[i].Feedback;
+                }
+                @if (feedback == null)
+                {
+                    <td class="text-center text-white">
+                        In progress..
+                    </td>
+                }
+                else if (feedback.EngineException != null)
+                {
+                    <td class="text-center bg-danger text-white">
+                        Engine threw an Exception
+                    </td>
+                }
+                else if (ViewModel.FeedbackLevel == "No Feedback")
+                {
+                    <td class="text-center">
+                        -
+                    </td>
+                }
+                else
+                {
+                    var percentage = ViewModel.SubmissionTestCoveragePercentage(i);
+                    if (percentage < ViewModel.TestCoverageLevel * 0.75)
+                    {
+                        <td class="text-center bg-danger text-white">
+                            @percentage%
+                        </td>
+                    }
+                    else if (percentage < ViewModel.TestCoverageLevel)
+                    {
+                        <td class="text-center bg-warning text-white">
+                            @percentage%
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="text-center bg-success text-white">
+                            @percentage%
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

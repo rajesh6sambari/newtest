@@ -1,0 +1,45 @@
+﻿@page
+@model TestingTutor.UI.Pages.Terms.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Term</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Term.Id" />
+            <div class="form-group">
+                <label asp-for="Term.Name" ></label>
+                <input asp-for="Term.Name" class="form-control" />
+                <span asp-validation-for="Term.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Term.DateFrom" ></label>
+                <input asp-for="Term.DateFrom" class="form-control" />
+                <span asp-validation-for="Term.DateFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Term.DateTo" ></label>
+                <input asp-for="Term.DateTo" class="form-control" />
+                <span asp-validation-for="Term.DateTo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary text-light" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

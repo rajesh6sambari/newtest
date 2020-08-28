@@ -1,0 +1,105 @@
+﻿@using Newtonsoft.Json
+@model TestingTutor.UI.DataVisuals.MultiRadarChart
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var colors = model.Colors;
+    var axises = model.MultiRadarChartAxises;
+    var minimum = model.Minimum;
+    var maximum = model.Maximum;
+    var sides = axises.length;
+    var exterior_angle = 360 / sides;
+    var $container = $(id),
+        margin = { top: 30, right: 30, bottom: 30, left: 40 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom,
+        min = Math.min(width / 2, height / 2) - 15;
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', width + margin.left + margin.right + 'px')
+        .attr('height', height + margin.top + margin.bottom + 'px')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+    var center = { x: width / 2, y: height / 2 }
+
+    var poly = [];
+    var text = [];
+    var data_poly = [];
+    for (var i = 0; i < axises[0].Values.length; ++i) {
+        data_poly.push([]);
+    }
+    var angle = -90;
+    for (var i = 0; i < sides; ++i) {
+        var radians = angle * Math.PI / 180;
+        poly.push(
+            {
+                x: min * Math.cos(radians) + center.x,
+                y: min * Math.sin(radians) + center.y
+            }
+        );
+        text.push(
+            {
+                x: (min + 5) * Math.cos(radians) + center.x,
+                y: (min + 5) * Math.sin(radians) + center.y,
+                text: axises[i].Axis,
+                angle: angle + 90
+            }
+        );
+
+        for (var j = 0; j < axises[i].Values.length; ++j) {
+            var value = ((axises[i].Values[j] - minimum) / (maximum - minimum)) * min;
+            data_poly[j].push(
+                {
+                    x: value * Math.cos(radians) + center.x,
+                    y: value * Math.sin(radians) + center.y
+                }
+            );
+        }
+        angle += exterior_angle;
+    }
+
+    svg.selectAll('outline')
+        .data([poly])
+        .enter()
+        .append('polygon')
+        .attr("points",function(d) {
+            return d.map(function(d) { return [d.x,d.y].join(","); }).join(" ");})
+        .attr("stroke","black")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
+
+    svg.selectAll('data_outline')
+        .data(data_poly)
+        .enter()
+        .append('polygon')
+        .attr("points", function (d) {
+            console.log(d);
+            return d.map(function(t) { return [t.x,t.y].join(","); }).join(" ");})
+        .attr("stroke","black")
+        .attr("stroke-width", 2)
+        .attr("fill", function(d, i) {
+            return colors[i];
+        })
+        .attr("opacity", 0.5);
+
+    svg.selectAll('text')
+        .data(text)
+        .enter()
+        .append('text')
+        .style('fill', 'black')
+        .style('font-size', '12px')
+        .attr("text-anchor", "middle")
+        .attr("transform",
+            function (d) {
+                return "translate(" + d.x.toString() + "," + d.y.toString() + ") rotate(" + d.angle + ")";
+            })
+        .text(function (d) { return d.text; });
+
+
+</script>

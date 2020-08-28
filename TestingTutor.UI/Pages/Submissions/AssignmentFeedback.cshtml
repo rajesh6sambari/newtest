@@ -1,0 +1,57 @@
+﻿@page
+@model TestingTutor.UI.Pages.Submissions.AssignmentFeedbackModel
+@{
+    ViewData["Title"] = "Assignment Feedback";
+}
+<h2>
+    @Model.ViewModel.Assignment.Name
+    <span style="float: right !important">
+        <a class="btn btn-light" asp-page="./Index">
+            Back to list
+        </a>
+    </span>
+</h2>
+<br />
+
+<h4>
+    Attempt History
+</h4>
+
+@await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackSubmissionTablePartial")
+
+<br />
+<br />
+
+<h4>
+    Submission #@(Model.ViewModel.Index + 1) Feedback - @Model.ViewModel.Assignment.Name
+</h4>
+<hr />
+@await Html.PartialAsync("Shared/AssignmentFeedback/_AssignmentFeedbackSelectorPartial")
+
+<br/>
+<form method="post">
+    <h4>
+        Your notes
+    </h4>
+    <input type="hidden" name="index" value="@Model.ViewModel.Index" />
+    <input type="hidden" name="index" value="@Model.ViewModel.Assignment.Id" />
+    <hr />
+    <div class="form-group">
+        <textarea name="notes" class="form-control">@Model.ViewModel.Submission.Notes</textarea>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary text-light" role="button" type="submit">
+            Save Notes
+        </button>
+    </div>
+</form>
+
+<br/>
+<br/>
+
+<h4>
+    Resubmit
+</h4>
+<a asp-page="/Submissions/Create" class="btn btn-primary text-light" role="button" asp-route-id="@Model.ViewModel.Assignment.Id">
+    Submit for Feedback
+</a>

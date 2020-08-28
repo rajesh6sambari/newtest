@@ -1,0 +1,180 @@
+﻿@page "{step?}"
+@model UI.Pages.Portal.IndexModel
+@{
+    ViewData["Title"] = "Portal";
+}
+
+@section Styles
+    {
+    <link rel="stylesheet" href="~/lib/chosen/dist/css/chosen.css">
+}
+
+
+<h2>
+    Portal
+    <span style="float: right !important">
+        <a class="btn btn-primary text-light" asp-page="/Portal/Create">Contribute</a>
+    </span>
+</h2>
+<hr />
+
+<div class="col-xs-12">
+    <form method="post" asp-page-handler="Filter">
+        <div class="form-group">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search..." asp-for="Name" />
+                <button type="button" class="btn rounded-0">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="LanguageId" class="control-label"></label>
+            <select asp-for="LanguageId" class="form-control" asp-items="ViewBag.LanguageId"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="DifficultyId" class="control-label"></label>
+            <select asp-for="DifficultyId" class="form-control" asp-items="ViewBag.DifficultiesId"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Tags" class="control-label"></label>
+            <br />
+            <select asp-for="Tags" class="form-control chosen-select" id="tag_list" multiple asp-items="ViewBag.TagsId"></select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Find</button>
+        </div>
+    </form>
+</div>
+
+@if (Model.Assignments.Count == 0)
+{
+    <p>
+        No Assignments Found
+    </p>
+}
+else
+{
+    foreach (var assignment in Model.Assignments)
+    {
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#assignment_@assignment.Id">
+                            @assignment.Name
+                        </button>
+                    </h2>
+                    <div>
+                        @foreach (var t in assignment.Tags)
+                        {
+                            <span class="badge badge-secondary">
+                                @t.Tag.Name
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="assignment_@assignment.Id" class="collapse">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h1>
+                            @assignment.Name
+                        </h1>
+                    </div>
+                    <p class="lead">
+                        Institution @assignment.Institution.Name
+                    </p>
+                    <p class="lead">
+                        Language @assignment.Language.Name
+                    </p>
+                    <p class="lead">
+                        Difficulty @assignment.Difficulty.Value
+                    </p>
+                    <p class="lead">
+                        Instructors @string.Join(',', assignment.Instructors.ToList().Select(a => $"{a.Instructor.FirstName} {a.Instructor.LastName}").ToList())
+                    </p>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="AssignmentSpecification" method="post">
+                                <button class="btn btn-link">
+                                    <i class="fas fa-file-pdf"></i>
+                                    Assignment Specification
+                                </button>
+                            </form>
+                        </li>
+                        <li class="list-inline-item">
+                            <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="ReferenceSolution" method="post">
+                                <button class="btn btn-link">
+                                    <i class="fas fa-file-code"></i>
+                                    Reference Solution
+                                </button>
+                            </form>
+                        </li>
+                        <li class="list-inline-item">
+                            <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="ReferenceTestCasesSolutions" method="post">
+                                <button class="btn btn-link">
+                                    <i class="fas fa-file-code"></i>
+                                    Test Case Solution
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                    <div class="mx-auto text-center">
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light" role="button" asp-page="./Template" asp-route-id="@assignment.Id">
+                                Use as Template
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="container">
+        <div class="d-flex justify-content-between">
+            <div>
+                @if (Model.IsPrevious)
+                {
+                    <form method="post" asp-page-handler="Previous" asp-route-step="@(Model.Step - 1)">
+                        <button class="btn btn-link">
+                            <i class="fas fa-arrow-left"></i>
+                            Previous
+                        </button>
+                        <input type="hidden" asp-for="Name" />
+                        <input type="hidden" asp-for="DifficultyId" />
+                        <input type="hidden" asp-for="LanguageId" />
+                        <input type="hidden" asp-for="Tags"/>
+                    </form>
+                }
+            </div>
+            <div>
+                @if (Model.IsNext)
+                {
+                    <form method="post" asp-page-handler="Next" asp-route-step="@(Model.Step + 1)">
+                        <button class="btn btn-link">
+                            Next
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <input type="hidden" asp-for="Name" />
+                        <input type="hidden" asp-for="DifficultyId" />
+                        <input type="hidden" asp-for="LanguageId" />
+                        <input type="hidden" asp-for="Tags"/>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/lib/chosen/dist/js/chosen.jquery.js" type="text/javascript"></script>
+    <script src="~/lib/chosen/dist/js/docsupport/init.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/js/tags.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        window.history.pushState(null, null, window.location.pathname);
+    </script>
+}

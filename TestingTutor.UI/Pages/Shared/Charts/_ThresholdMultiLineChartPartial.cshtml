@@ -1,0 +1,131 @@
+﻿@using Newtonsoft.Json
+@model TestingTutor.UI.DataVisuals.ThresholdMultiLineChart
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var lines = model.Lines;
+    var theThresholdLine = model.ThresholdLine;
+    var maximum = model.Maximum;
+    var minimum = model.Minimum;
+    var xaxis = model.XAxis;
+    var yaxis = model.YAxis;
+    var xmark = model.XMark;
+    var markColor = model.MarkColor;
+
+    var $container = $(id),
+        margin = { top: 10, right: 100, bottom: 40, left: 50 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom;
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+    var x = d3.scaleLinear()
+        .domain([minimum.X, maximum.X])
+        .range([0, width]);
+
+    var y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([minimum.Y, maximum.Y]);
+
+    svg.append('g')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    svg.append('g')
+        .call(d3.axisLeft(y));
+
+    svg.append('text')
+        .attr('text-anchor', 'end')
+        .attr('x', width / 2 + margin.left)
+        .attr('y', height + margin.top + 20)
+        .text(xaxis);
+
+    svg.append('text')
+        .attr('text-anchor', 'end')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -margin.left + 20)
+        .attr('x', -margin.top - height / 2 + 20)
+        .text(yaxis);
+
+
+    svg.selectAll('.line')
+        .data(lines)
+        .enter()
+        .append('path')
+        .attr('fill', 'none')
+        .attr('stroke',
+            function(d) {
+                return d.Color;
+            })
+        .attr('stroke-width', 1.5)
+        .attr('d',
+            function(d) {
+                return d3.line().curve(d3.curveStepAfter)
+                    .x(function(p) {
+                        return x(p.X);
+                    })
+                    .y(function(p, i) {
+                        return y(p.Y);
+                    })(d.Points);
+            });
+
+    svg.append('g')
+        .append('line')
+        .attr('x1', x(xmark))
+        .attr('y1', y(minimum.Y))
+        .attr('x2', x(xmark))
+        .attr('y2', y(maximum.Y))
+        .attr('stroke-width', 2)
+        .attr('stroke', markColor);
+
+    var linesPoint = svg.append('g');
+    for (var i = 0; i < lines.length; ++i) {
+        for (var p = 0; p < lines[i].Points.length; ++p) {
+            linesPoint.append('circle')
+                .attr('r', 5)
+                .attr('fill', lines[i].Color)
+                .attr('cx', x(lines[i].Points[p].X))
+                .attr('cy', y(lines[i].Points[p].Y));
+        }
+    }
+
+    var thresholdLine = svg.append('g');
+    thresholdLine.append('path')
+        .datum(theThresholdLine)
+        .attr('fill', 'none')
+        .attr('stroke', theThresholdLine.Color)
+        .attr('stroke-width', 1.5)
+        .attr('d', function(d) {
+            return d3.line().curve(d3.curveNatural)
+                .x(function(p) { return x(p.X); })
+                .y(function(p) { return y(p.Y); })(d.Points);
+        });
+    thresholdLine.append('text')
+        .attr('transform',
+            'translate(' +
+            x(theThresholdLine.Points[theThresholdLine.Points.length - 1].X) +
+            ',' +
+            y(theThresholdLine.Points[theThresholdLine.Points.length - 1].Y) +
+            ')')
+        .attr('x', 12)
+        .text(theThresholdLine.Label)
+        .style('fill', theThresholdLine.Color)
+        .style('font-size', 15);
+
+    thresholdLine.append('circle')
+        .attr('r', 5)
+        .attr('fill', theThresholdLine.Color)
+        .attr('cx', x(theThresholdLine.Points[theThresholdLine.Points.length - 1].X))
+        .attr('cy', y(theThresholdLine.Points[theThresholdLine.Points.length - 1].Y));
+        
+
+
+</script>

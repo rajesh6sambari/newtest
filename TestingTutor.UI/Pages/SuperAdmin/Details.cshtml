@@ -1,0 +1,50 @@
+﻿@page
+@model TestingTutor.UI.Pages.SuperAdmin.DetailsModel
+@{
+    ViewData["Title"] = "User Details";
+}
+<h2>User Details</h2>
+@*<hr />*@
+<table class="table table-responsive table-bordered">
+    @if (@Model.Users.Count == 0)
+    {
+        <tr>
+            <td class="text-center">
+                No User Accounts
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var user in @Model.Users)
+        {
+
+        <tr>
+            <td>User Id</td>
+            <td>@user.Id</td>
+        </tr>
+        <tr>
+            <td>User Name</td>
+            <td>@user.FirstName @user.LastName</td>
+        </tr>
+
+        <tr>
+            <td>User Email</td>
+            <td>@user.Email</td>
+        </tr>
+        <tr>
+            <td>User Institution</td>
+            <td>@user.Institution.Name</td>
+        </tr>
+        }
+    }
+
+</table>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

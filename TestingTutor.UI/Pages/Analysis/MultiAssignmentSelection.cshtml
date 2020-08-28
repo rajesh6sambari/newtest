@@ -1,0 +1,155 @@
+﻿@page
+@using UI.Pages.Analysis
+@model MultiAssignmentSelectionModel
+@{
+    ViewData["Title"] = "Analysis";
+}
+
+
+<h2>Multiple Assignment Analysis</h2>
+<div class="d-flex justify-content-between">
+    <div>
+        <a asp-page="/Assignments/Index">
+            Back to list
+        </a>
+    </div>
+    <div>
+        @if (Model.SelectedAssignments.Count > 1)
+        {
+            <form method="post" asp-page-handler="Perform">
+                @for (var i = 0; i < Model.Selected.Count; ++i)
+                {
+                    <input asp-for="Selected[i]" type="hidden" />
+                }
+                <button class="btn btn-primary" type="submit">
+                    Perform Analysis
+                </button>
+            </form>
+        }
+    </div>
+</div>
+<h4>
+    Selected Assignments
+</h4>
+<hr />
+<div class="container">
+    <div class="row text-center">
+        @if (Model.SelectedAssignments.Any())
+        {
+            foreach (var item in Model.SelectedAssignments)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                    <div class="card">
+                        <div class="card-header">
+                            @item.Assignment.Course.CourseName
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <h1>
+                                    @item.Assignment.Name
+                                </h1>
+                            </div>
+                            <p class="lead">
+                                @item.Assignment.Language.Name
+                            </p>
+                            <form method="post">
+                                <div class="btn-group">
+                                    <button class="btn btn-primary" type="submit" asp-page-handler="Left">
+                                        Left
+                                    </button>
+                                    <button class="btn btn-danger" type="submit" asp-page-handler="Remove">
+                                        Remove
+                                    </button>
+                                    <button class="btn btn-primary" type="submit" asp-page-handler="Right">
+                                        Right
+                                    </button>
+                                </div>
+                                @for (var i = 0; i < Model.Selected.Count; ++i)
+                                {
+                                    <input asp-for="Selected[i]" type="hidden" />
+                                }
+                                <input name="remove" value="@item.Index" type="hidden" />
+                                <input name="right" value="@item.Index" type="hidden" />
+                                <input name="left" value="@item.Index" type="hidden" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                <div class="card">
+                    <div class="card-header">
+                        Add Assignments Below
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="d-flex flex-column">
+                                <span class="fas fa-5x fa-plus-circle text-success"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<h4>
+    Choose Assignments
+</h4>
+<hr />
+<div class="container">
+    <div class="row text-center">
+        @if (Model.NonSelectedAssignments.Any())
+        {
+            foreach (var item in Model.NonSelectedAssignments)
+            {
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-5">
+                    <div class="card">
+                        <div class="card-header">
+                            @item.Assignment.Course.CourseName
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <h1>
+                                    @item.Assignment.Name
+                                </h1>
+                            </div>
+                        </div>
+                        <p class="lead">
+                            @item.Assignment.Language.Name
+                        </p>
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <form asp-page-handler="Add" method="post">
+                                    @for (var i = 0; i < Model.Selected.Count; ++i)
+                                    {
+                                        <input asp-for="Selected[i]" type="hidden" />
+                                    }
+                                    <input name="add" value="@item.Index" type="hidden" />
+                                    <button class="btn btn-success" type="submit">
+                                        Add
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="lead">
+                No more assignments to choose from.
+            </p>
+        }
+    </div>
+</div>
+@section Scripts
+    {
+    <script src="~/js/refresh_post_fix.js"></script>
+}

@@ -1,0 +1,78 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+@{
+    Model.Request.Cookies.TryGetValue("testingtutor.org.Theme", out string theme);
+}
+
+<h4>@ViewData["Title"]</h4>
+@Html.Partial("_StatusMessage", Model.StatusMessage)
+<div class="row">
+    <div class="col-md-6">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownTheme" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Site Theme</a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownTheme">
+            <li><a class="dropdown-item theme @(theme == "default" ? "active" : "")" data-theme="default" href="#">Default</a></li>
+            <li><a class="dropdown-item theme @(theme == "cerulean" ? "active" : "")" data-theme="cerulean" href="#">Cerulean</a></li>
+            <li><a class="dropdown-item theme @(theme == "cosmo" ? "active" : "")" data-theme="cosmo" href="#">Cosmo</a></li>
+            <li><a class="dropdown-item theme @(theme == "cyborg" ? "active" : "")" data-theme="cyborg" href="#">Cyborg</a></li>
+            <li><a class="dropdown-item theme @(theme == "darkly" ? "active" : "")" data-theme="darkly" href="#">Darkly</a></li>
+            <li><a class="dropdown-item theme @(theme == "flatly" ? "active" : "")" data-theme="flatly" href="#">Flatly</a></li>
+            <li><a class="dropdown-item theme @(theme == "journal" ? "active" : "")" data-theme="journal" href="#">Journal</a></li>
+            <li><a class="dropdown-item theme @(theme == "litera" ? "active" : "")" data-theme="litera" href="#">Litera</a></li>
+            <li><a class="dropdown-item theme @(theme == "lumen" ? "active" : "")" data-theme="lumen" href="#">Lumen</a></li>
+            <li><a class="dropdown-item theme @(theme == "lux" ? "active" : "")" data-theme="lux" href="#">Lux</a></li>
+            <li><a class="dropdown-item theme @(theme == "materia" ? "active" : "")" data-theme="materia" href="#">Materia</a></li>
+            <li><a class="dropdown-item theme @(theme == "minty" ? "active" : "")" data-theme="minty" href="#">Minty</a></li>
+            <li><a class="dropdown-item theme @(theme == "pulse" ? "active" : "")" data-theme="pulse" href="#">Pulse</a></li>
+            <li><a class="dropdown-item theme @(theme == "sandstone" ? "active" : "")" data-theme="sandstone" href="#">Sandstone</a></li>
+            <li><a class="dropdown-item theme @(theme == "simplex" ? "active" : "")" data-theme="simplex" href="#">Simplex</a></li>
+            <li><a class="dropdown-item theme @(theme == "sketchy" ? "active" : "")" data-theme="sketchy" href="#">Sketchy</a></li>
+            <li><a class="dropdown-item theme @(theme == "slate" ? "active" : "")" data-theme="slate" href="#">Slate</a></li>
+            <li><a class="dropdown-item theme @(theme == "solar" ? "active" : "")" data-theme="solar" href="#">Solar</a></li>
+            <li><a class="dropdown-item theme @(theme == "spacelab" ? "active" : "")" data-theme="spacelab" href="#">Spacelab</a></li>
+            <li><a class="dropdown-item theme @(theme == "superhero" ? "active" : "")" data-theme="superhero" href="#">Superhero</a></li>
+            <li><a class="dropdown-item theme @(theme == "united" ? "active" : "")" data-theme="united" href="#">United</a></li>
+            <li><a class="dropdown-item theme @(theme == "yeti" ? "active" : "")" data-theme="yeti" href="#">Yeti</a></li>
+        </ul>
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username">User Name</label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label readonly="readonly" asp-for="Input.Email"></label>
+                @if (Model.IsEmailConfirmed)
+                {
+                <div class="input-group">
+                    <input readonly="readonly"  asp-for="Input.Email" class="form-control" disabled />
+                    <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                </div>
+                }
+                else
+                {
+                <input asp-for="Input.Email" class="form-control" disabled />
+                <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                }
+                <span asp-validation-for="Input.Email" class="text-danger" disabled></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-default">Save</button>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/js.cookie.js"></script>
+}

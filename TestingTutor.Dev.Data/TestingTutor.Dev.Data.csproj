@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataAccess\Repositories\StudentRepository.cs" />
+    <Compile Remove="Migrations\20200804215125_ApplicationDbContextModelSnapshot.cs" />
+    <Compile Remove="Migrations\20200804215125_ApplicationDbContextModelSnapshot.Designer.cs" />
+    <Compile Remove="Migrations\20200806061124_ApplicationDbContextModelSnapshot.cs" />
+    <Compile Remove="Migrations\20200806061124_ApplicationDbContextModelSnapshot.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="2.1.6" />
+  </ItemGroup>
+
+</Project>

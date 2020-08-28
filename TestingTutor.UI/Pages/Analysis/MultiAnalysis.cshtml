@@ -1,0 +1,55 @@
+﻿@page
+@using UI.Pages.Analysis
+@model MultiAnalysisModel
+@{
+    ViewData["Title"] = "Analysis";
+}
+
+
+<h2>Multiple Assignment Analysis</h2>
+<div class="d-flex justify-content-between">
+    <div>
+        <a asp-page="/Assignments/Index">
+            Back to list
+        </a>
+    </div>
+    <div>
+        <form method="post" asp-page-handler="Download" asp-route-selected="@Model.Selected">
+            <button class="btn btn-primary" type="submit">
+                Download CSV
+            </button>
+        </form>
+    </div>
+</div>
+
+<hr />
+<table class="table table-striped">
+    <tr>
+        <td>
+            Line Coverage
+        </td>
+        <td style="width: 50px; height: 50px; background-color: @Model.Chart.Colors[0]"></td>
+    </tr>
+    <tr>
+        <td>
+            Branch Coverage
+        </td>
+        <td style="width: 50px; height: 50px; background-color: @Model.Chart.Colors[1]"></td>
+    </tr>
+    <tr>
+        <td>
+            Conditional Coverage
+        </td>
+        <td style="width: 50px; height: 50px; background-color: @Model.Chart.Colors[2]"></td>
+    </tr>
+    <tr>
+        <td>
+            Redundant Tests
+        </td>
+        <td style="width: 50px; height: 50px; background-color: @Model.Chart.Colors[3]"></td>
+    </tr>
+</table>
+<div id="@Model.Chart.Id" style="min-width: 300px; min-height: 300px;">
+
+</div>
+@await Html.PartialAsync("Shared/Charts/_GroupBarChartPartial", Model.Chart)

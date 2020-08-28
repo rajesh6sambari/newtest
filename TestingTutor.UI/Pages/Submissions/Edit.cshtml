@@ -1,0 +1,60 @@
+﻿@page
+@model TestingTutor.UI.Pages.Submissions.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Submission</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Submission.Id" />
+            <div class="form-group">
+                <label asp-for="Submission.SubmitterId" class="control-label"></label>
+                <input asp-for="Submission.SubmitterId" class="form-control" />
+                <span asp-validation-for="Submission.SubmitterId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Submission.AssignmentId" class="control-label"></label>
+                <select asp-for="Submission.AssignmentId" class="form-control" asp-items="ViewBag.AssignmentId"></select>
+                <span asp-validation-for="Submission.AssignmentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Submission.ApplicationMode" class="control-label"></label>
+                <input asp-for="Submission.ApplicationMode" class="form-control" />
+                <span asp-validation-for="Submission.ApplicationMode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Submission.FeedbackId" class="control-label"></label>
+                <select asp-for="Submission.FeedbackId" class="form-control" asp-items="ViewBag.FeedbackId"></select>
+                <span asp-validation-for="Submission.FeedbackId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Submission.SubmitterSolution" class="control-label"></label>
+                <input asp-for="Submission.SubmitterSolution" class="form-control" />
+                <span asp-validation-for="Submission.SubmitterSolution" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Submission.SubmitterTestCaseSolution" class="control-label"></label>
+                <input asp-for="Submission.SubmitterTestCaseSolution" class="form-control" />
+                <span asp-validation-for="Submission.SubmitterTestCaseSolution" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary text-light" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

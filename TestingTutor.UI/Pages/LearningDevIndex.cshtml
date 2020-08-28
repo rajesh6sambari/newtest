@@ -1,0 +1,92 @@
+﻿@page
+@model TestingTutor.UI.Pages.LearningDevIndexModel
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@{
+    HttpContext.Request.Cookies.TryGetValue("testingtutor.org.Theme", out var theme);
+
+    var image = "images/blue-retro.png";
+
+    switch (theme)
+    {
+        case "default":
+        case "cerulean":
+        case "cosmo":
+        case "flatly":
+        case "journal":
+        case "litera":
+        case "lumen":
+        case "lux":
+        case "materia":
+        case "minty":
+        case "pulse":
+        case "sandstone":
+        case "simplex":
+        case "sketchy":
+        case "spacelab":
+        case "united":
+        case "yeti":
+            image = "images/blue-retro.png";
+            break;
+        case "cyborg":
+        case "darkly":
+        case "slate":
+        case "solar":
+        case "superhero":
+            image = "images/white-retro.png";
+            break;
+        default:
+            break;
+    }
+}
+
+
+@*<div class="container">
+        <div class="row">
+            <div class="col d-flex justify-content-center">
+                <img src="@image" alt="" class="img-fluid">
+            </div>
+        </div>
+    </div>*@
+    @*<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">*@
+       <div class="row h-100" >
+           <div class="col-md-6">
+               <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
+                   <div class="my-3 py-3">
+                       <h1 class="display-4 font-weight-normal">Create Assignments</h1>
+                       <p class="lead font-weight-normal">Testing Tutor  code coverage  the              testing      concepts that are attributable to missing test cases by comparing them against either the reference implementation or the student’s implementation.  </p>
+                   </div>
+               </div>
+           </div>
+           <div class="col-md-6">
+               <div class="col-md-12">
+                   @*<div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">*@
+                   <div class="bg-dark text-center pt-3 text-white">
+                       <div class="my-3 py-3">
+                           <a asp-page="/Assignments/Index">
+                               <h2 class="display-5">Learning Mode</h2>
+                           </a>
+                           <p class="lead">In Learning Mode, Testing Tutor teaches a student how to develop a complete test suite for a reference implementation of a program.</p>
+                           @*<a class="dropdown-item" asp-page="/Assignments/Index">Assignments</a>*@
+                       </div>
+                   </div>
+               </div>
+               <div class="col-md-12">
+                   <div class="bg-light pt-3 text-center overflow-hidden">
+                       <div class="my-3 p-3">
+                           <a asp-page="/DevAssignments/Index">
+                              
+                                   <h2 class="display-5">Development Mode</h2>
+                               </a>
+                               <p class="lead">In Development Mode, Testing Tutor helps a student completely test their newly written code.</p>
+
+                       </div>
+                   </div>
+               </div>
+           </div>
+ 
+       </div>
+

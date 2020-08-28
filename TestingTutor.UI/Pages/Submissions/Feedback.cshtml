@@ -1,0 +1,219 @@
+﻿@page
+@using TestingTutor.UI.Data.ViewModels
+@model TestingTutor.UI.Pages.Submissions.FeedbackModel
+
+@{
+    ViewData["Title"] = "Details";
+
+    var isLines = Model.Submission.Assignment.AssignmentCoverageTypeOptions.FirstOrDefault(c => c.IsChecked && c.CoverageTypeOption.Name.Equals("Statement")) != null;
+    var isBranches = Model.Submission.Assignment.AssignmentCoverageTypeOptions.FirstOrDefault(c => c.IsChecked && c.CoverageTypeOption.Name.Equals("Branch")) != null;
+    var isConditional = Model.Submission.Assignment.AssignmentCoverageTypeOptions.FirstOrDefault(c => c.IsChecked && c.CoverageTypeOption.Name.Equals("Condition")) != null;
+
+}
+
+<h2>Feedback Details</h2>
+
+<div>
+    <h4>@Model.Submission.Assignment.Name Submission - @Model.Submission.SubmissionDateTime</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Submission.ApplicationMode):
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Submission.ApplicationMode)
+        </dd>
+    </dl>
+    <hr />
+
+    @if (Model.FeedbackViewModel.TopLevelPageFeedback.ShouldDisplay)
+    {
+        foreach (var part in Model.FeedbackViewModel.TopLevelPageFeedback.Message.Split('\n'))
+        {
+            <p>@part</p>
+        }
+    }
+    else if (Model.FeedbackViewModel.DetailedFeedback.ShouldDisplay && Model.FeedbackViewModel.RawCoverageFeedback.ClassCoverages.Count > 0)
+    {
+        <h3>Detail Feedback</h3>
+        foreach (var classCoverage in Model.FeedbackViewModel.RawCoverageFeedback.ClassCoverages)
+        {
+            <h4>Name: @classCoverage.Name</h4>
+            <h4>Container: @classCoverage.Container</h4>
+            if (classCoverage.MethodCoverages.Count > 0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Method
+                            </th>
+                            <th>
+                                Lines
+                            </th>
+                            <th>
+                                Branches
+                            </th>
+                            <th>
+                                Conditionals
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var method in classCoverage.MethodCoverages)
+                        {
+                            <tr>
+                                <td>@method.Name</td>
+                                <td>
+                                    @if (method.LinesCovered + method.LinesMissed > 0 && isLines)
+                                    {
+                                        var lineProgress = (double)method.LinesCovered / (method.LinesCovered + method.LinesMissed);
+                                        lineProgress = Math.Truncate(lineProgress * 100.0f) / 100;
+                                        var lineNonProgress = 1.0f - lineProgress;
+                                        lineNonProgress = Math.Truncate(lineNonProgress * 100.0f) / 100;
+                                        var lineProgressString = (lineProgress * 100.0f).ToString("F0");
+                                        var lineNonProgressString = (lineNonProgress * 100.0f).ToString("F0");
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(lineProgressString)%;">
+                                                @lineProgressString%
+                                            </div>
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(lineNonProgressString)%">
+                                                @lineNonProgressString%
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (!isLines)
+                                    {
+                                        <span>Coverage Not Available</span>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (method.BranchesCovered + method.BranchesMissed > 0 && isBranches)
+                                    {
+                                        var branchProgress = (double)method.BranchesCovered / (method.BranchesCovered + method.BranchesMissed);
+                                        branchProgress = Math.Truncate(branchProgress * 100.0f) / 100;
+                                        var branchNonProgress = 1.0f - branchProgress;
+                                        branchNonProgress = Math.Truncate(branchNonProgress * 100.0f) / 100;
+                                        var branchProgressString = (branchProgress * 100.0f).ToString("F0");
+                                        var branchNonProgressString = (branchNonProgress * 100.0f).ToString("F0");
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(branchProgressString)%;">
+                                                @branchProgressString%
+                                            </div>
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(branchNonProgressString)%">
+                                                @branchNonProgressString%
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (!isBranches)
+                                    {
+                                        <span>Coverage Not Available</span>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (method.ConditionsCovered + method.ConditionsMissed > 0 && isConditional)
+                                    {
+                                        var conditionsProgress = (double)method.ConditionsCovered / (method.ConditionsCovered + method.ConditionsMissed);
+                                        conditionsProgress = Math.Truncate(conditionsProgress * 100.0f) / 100;
+                                        var conditionsNonProgress = 1.0f - conditionsProgress;
+                                        conditionsNonProgress = Math.Truncate(conditionsNonProgress * 100.0f) / 100;
+                                        var conditionsProgressString = (conditionsProgress * 100.0f).ToString("F0");
+                                        var conditionsNonProgressString = (conditionsNonProgress * 100.0f).ToString("F0");
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(conditionsProgressString)%;">
+                                                @conditionsProgressString%
+                                            </div>
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(conditionsNonProgressString)%">
+                                                @conditionsNonProgressString%
+                                                </div>
+                                        </div>
+                                    }
+                                    else if (!isConditional)
+                                    {
+                                        <span>Coverage Not Available</span>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>@Html.DisplayNameFor(model => model.FeedbackViewModel.DetailedFeedback.TestCaseResults[0].Name)</th>
+                    <th>Test Concepts</th>
+                </tr>
+            </thead>
+
+            @{var count = 1; }
+
+            @foreach (var result in Model.FeedbackViewModel.DetailedFeedback.TestCaseResults)
+            {
+                if (result.TestStatus == TestStatus.Covered)
+                {
+                    continue;
+                }
+                <tr>
+                    <td>
+                        @count
+                        @{ count++;}
+                    </td>
+                    <td>
+                        @result.Name
+                    </td>
+                    <td>
+                        <ol type="1">
+                            @foreach (var concept in result.Concepts)
+                            {
+                                <li><a href="#@concept.Anchor" data-toggle="modal" data-target="#@concept.Anchor">@concept.Conceptual</a></li>
+                            }
+                        </ol>
+                    </td>
+                </tr>
+            }
+        </table>
+       
+            foreach (var feedback in Model.FeedbackViewModel.ConceptualFeedback.Feedback)
+            {
+                <div class="modal fade" id="@feedback.Anchor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">@Html.Raw(feedback.Conceptual)</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-dark">
+                                @Html.Raw(feedback.Conceptual)<br />@Html.Raw(feedback.Detailed)
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+    }
+</div>
+<div>
+    <a asp-page="./Index">Back to Submissions List</a>
+</div>

@@ -1,0 +1,145 @@
+﻿@page
+@using TestingTutor.Dev.Data.Models
+@model TestingTutor.UI.Pages.Assignments.CreateModel
+
+@{
+    ViewData["Title"] = "Create Assignment";
+}
+
+@section Styles
+    {
+    <link rel="stylesheet" href="~/lib/chosen/dist/css/chosen.css">
+}
+
+<h2>
+    Create New Assignment
+    <span style="float: right !important">
+        <a  class="btn btn-primary text-light" asp-page="/Portal/Index">Find Template</a>
+    </span>
+</h2>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Assignment.Name" class="control-label"></label>
+                <input asp-for="Assignment.Name" class="form-control" />
+                <span asp-validation-for="Assignment.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.AssignmentVisibilityProtectionLevelId" class="control-label"></label>
+                <select asp-for="Assignment.AssignmentVisibilityProtectionLevelId" class="form-control" asp-items="ViewBag.AssignmentVisibilityProtectionLevelId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.DifficultyId" class="control-label"></label>
+                <select asp-for="Assignment.DifficultyId" class="form-control" asp-items="ViewBag.DifficultiesId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AssignmentSpecificationUpload" class="control-label"></label>
+                <input asp-for="AssignmentSpecificationUpload" type="file" class="form-control" style="height:auto" />
+                <span asp-validation-for="AssignmentSpecificationUpload" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.CourseId" class="control-label"></label>
+                <select asp-for="Assignment.CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReferenceSolutionUpload" class="control-label"></label>
+                <input asp-for="ReferenceSolutionUpload" type="file" class="form-control" style="height:auto" />
+                <span asp-validation-for="ReferenceSolutionUpload" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReferenceTestCasesSolutionsUpload" class="control-label"></label>
+                <input asp-for="ReferenceTestCasesSolutionsUpload" type="file" class="form-control" style="height:auto" />
+                <span asp-validation-for="ReferenceTestCasesSolutionsUpload" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.LanguageId" class="control-label"></label>
+                <select asp-for="Assignment.LanguageId" class="form-control" asp-items="ViewBag.LanguageId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.TestCoverageLevel" class="control-label"></label>
+                <input asp-for="Assignment.TestCoverageLevel" class="form-control" />
+                <span asp-validation-for="Assignment.TestCoverageLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.RedundantTestLevel" class="control-label"></label>
+                <input asp-for="Assignment.RedundantTestLevel" class="form-control" />
+                <span asp-validation-for="Assignment.RedundantTestLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <table class="table">
+                    <tr class="row"><td><strong>Application Mode Support</strong></td></tr>
+                    <tr class="row">
+                        @for (int i = 0; i < Model.ApplicationModes.Count; ++i)
+                        {
+                            <td>
+                                @Html.CheckBoxFor(m => m.ApplicationModes[i].IsChecked)
+                                @Html.DisplayFor(m => m.ApplicationModes[i].Name)
+                                @Html.HiddenFor(x => x.ApplicationModes[i].Name)
+                                @Html.HiddenFor(x => x.ApplicationModes[i].Id)
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.TestingTypeOptionId" class="control-label"></label>
+                <select asp-for="Assignment.TestingTypeOptionId" class="form-control" asp-items="ViewBag.TestingTypeOptionsId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Assignment.FeedbackLevelOptionId" class="control-label"></label>
+                <select asp-for="Assignment.FeedbackLevelOptionId" class="form-control" asp-items="ViewBag.FeedbackLevelOptionId"></select>
+            </div>
+            <div class="form-group">
+                <table class="table">
+                    <tr class="row"><td><strong>Testing Coverage Type</strong></td></tr>
+                    <tr class="row">
+                        @for (int i = 0; i < Model.CoverageTypeOptions.Count; ++i)
+                        {
+                            <td>
+                                @Html.CheckBoxFor(m => m.CoverageTypeOptions[i].IsChecked)
+                                @Html.DisplayFor(m => m.CoverageTypeOptions[i].Name)
+                                @Html.HiddenFor(x => x.CoverageTypeOptions[i].Name)
+                                @Html.HiddenFor(x => x.CoverageTypeOptions[i].Id)
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+
+            <hr />
+            <div class="form-group">
+                <label class="control-label">Create New Tag</label>
+                <br />
+                <input type="text" id="add_tag" />
+                <button type="button" class="btn btn-primary text-light" id="add_tag_button">Add Tag</button>
+            </div>
+            <div class="form-group" id="hidden_tags">
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Tags" class="control-label">Add Existing Tag(s)</label>
+                <br />
+                <select asp-for="Tags" class="form-control chosen-select" id="tag_list" multiple asp-items="ViewBag.TagsId"></select>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary text-light" />
+                <a asp-page="Index" class="btn btn-primary text-light">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/lib/chosen/dist/js/chosen.jquery.js" type="text/javascript"></script>
+    <script src="~/lib/chosen/dist/js/docsupport/init.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/js/tags.js" type="text/javascript"></script>
+}

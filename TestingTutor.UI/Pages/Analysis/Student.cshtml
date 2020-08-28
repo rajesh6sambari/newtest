@@ -1,0 +1,167 @@
+﻿@page
+@using Newtonsoft.Json
+@using TestingTutor.Dev.Data.Models
+@using TestingTutor.UI.Pages.Submissions
+@using UI.Pages.Analysis
+@model UI.Pages.Analysis.StudentModel
+@{
+    ViewData["Title"] = "Analysis";
+}
+
+
+<form asp-page-handler="Download" asp-route-id="@Model.Assignment.Id"
+      asp-route-submitter="@Model.SubmitterId"
+      method="post">
+    <h2>
+        @Model.Assignment.Name of @Model.SubmitterId
+        <span style="float: right !important">
+            <button class="btn btn-light">Download Csv</button>
+        </span>
+    </h2>
+</form>
+
+<hr />
+<table class="table">
+    <thread>
+        <tr>
+            <th>Key</th>
+        </tr>
+    </thread>
+    <tbody>
+        @for (var i = 0; i < Model.CourseCharts.Labels.Count; ++i)
+        {
+            <tr>
+                <td>
+                    @Model.CourseCharts.Labels[i]
+                </td>
+                <td style="width: 50px; height: 50px; background-color: @Model.CourseCharts.Colors[i]"></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>
+                Latest Radar Chart
+            </h3>
+            <div id="@Model.RadarChart.Id" style="min-width: 300px; min-height: 300px;"></div>
+        </div>
+        <div class="col-sm-6">
+            <h3>Latest Redundancies</h3>
+            <div id="@Model.BarChart.Id" style="min-width: 300px; min-height: 300px;"></div>
+        </div>
+    </div>
+</div>
+<hr />
+<h3>
+    Line Coverage
+</h3>
+<hr />
+<div id="@Model.CourseCharts.LineCoverageChart.Id" style="min-width: 300px; min-height: 300px;">
+
+</div>
+<h3>
+    Branch Coverage
+</h3>
+<hr />
+<div id="@Model.CourseCharts.BranchCoverageChart.Id" style="min-width: 300px; min-height: 300px;">
+
+</div>
+<h3>
+    Conditional Coverage
+</h3>
+<hr />
+<div id="@Model.CourseCharts.ConditionalCoverageChart.Id" style="min-width: 300px; min-height: 300px;">
+
+</div>
+
+<h3>
+    Redundant Test
+</h3>
+<hr />
+<div id="@Model.CourseCharts.RedundantTestChart.Id" style="min-width: 300px; min-height: 300px;">
+
+</div>
+@await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.LineCoverageChart)
+@await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.BranchCoverageChart)
+@await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.ConditionalCoverageChart)
+@await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.RedundantTestChart)
+@await Html.PartialAsync("Shared/Charts/_MultiRadarChartPartial", Model.RadarChart)
+@await Html.PartialAsync("Shared/Charts/_BarChartPartial", Model.BarChart)
+
+<hr />
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <a asp-page="../Submissions/StudentFeedback" asp-route-id="@Model.Assignment.Id"
+                   asp-route-returnUrl="@Model.Url" asp-route-submitter="@Model.SubmitterId">
+                    Assignment Link
+                </a>
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < Model.Submissions.Count; ++i)
+        {
+            <tr>
+                <td>
+                    Submission @(i + 1)
+                </td>
+                <td>
+                    @Model.Submissions[i].ApplicationMode
+                </td>
+                <td>
+                    <ul class="list-inline">
+                        @if (Model.Submissions[i].ApplicationMode == "Development Mode")
+                        {
+                            <li class="list-inline-item">
+                                <form asp-route-id="@Model.Submissions[i].Id"
+                                      asp-route-type="Solution"
+                                      method="post">
+                                    <button class="btn btn-link" type="submit">
+                                        <i class="fas fa-file-code"></i>
+                                        Solution
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        <li class="list-inline-item">
+                            <form asp-route-id="@Model.Submissions[i].Id"
+                                  asp-route-type="TestSolution"
+                                  method="post">
+                                <button class="btn btn-link" type="submit">
+                                    <i class="fas fa-file-code"></i>
+                                    Test Solution
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div>
+    <a asp-page="/Analysis/Course" asp-route-id="@Model.Assignment.Id">Back to List</a>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("Shared/_ValidationScriptsPartial");
+    }
+
+}

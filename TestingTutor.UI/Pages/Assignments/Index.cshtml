@@ -1,0 +1,89 @@
+﻿@page
+@using TestingTutor.Dev.Data.Models
+@model TestingTutor.UI.Pages.Assignments.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Assignments</h2>
+
+<div class="d-flex justify-content-between">
+    <div>
+        <a asp-page="Create">Create new</a>
+    </div>
+    <div>
+        <a asp-page="/Analysis/MultiAssignmentSelection">
+            Multiple Analysis
+        </a>
+    </div>
+</div>
+@foreach (var assignment in Model.Assignment)
+{
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#assignment_@assignment.Id">
+                        @assignment.Name
+                    </button>
+                </h2>
+                <div>
+                    @foreach (var t in assignment.Tags)
+                    {
+                        <span class="badge badge-secondary">
+                            @t.Tag.Name
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div id="assignment_@assignment.Id" class="collapse">
+            <div class="card-body">
+                <div class="card-title">
+                    <h1>
+                        @assignment.Name
+                    </h1>
+                </div>
+                <p class="lead">
+                    @assignment.Language.Name
+                </p>
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="AssignmentSpecification" method="post">
+                            <button class="btn btn-link">
+                                <i class="fas fa-file-pdf"></i>
+                                Assignment Specification
+                            </button>
+                        </form>
+                    </li>
+                    <li class="list-inline-item">
+                        <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="ReferenceSolution" method="post">
+                            <button class="btn btn-link">
+                                <i class="fas fa-file-code"></i>
+                                Reference Solution
+                            </button>
+                        </form>
+                    </li>
+                    <li class="list-inline-item">
+                        <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="ReferenceTestCasesSolutions" method="post">
+                            <button class="btn btn-link">
+                                <i class="fas fa-file-code"></i>
+                                Test Case Solution
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+                <div class="mx-auto text-center">
+                    <div class="btn-group">
+                        <a class="btn btn-primary text-light" role="button" asp-page="../Submissions/Create" asp-route-id="@assignment.Id">Preflight</a>
+                        <a class="btn btn-primary text-light" role="button" asp-page="./Edit" asp-route-id="@assignment.Id">Edit</a>
+                        <a class="btn btn-primary text-light" role="button" asp-page="./Details" asp-route-id="@assignment.Id">Details</a>
+                        <a class="btn btn-primary text-light" role="button" asp-page="./Delete" asp-route-id="@assignment.Id">Delete</a>
+                        <a class="btn btn-primary text-light" role="button" asp-page="../Analysis/Course" asp-route-id="@assignment.Id">Analysis</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

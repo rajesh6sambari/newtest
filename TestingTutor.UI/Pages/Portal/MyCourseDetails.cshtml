@@ -1,0 +1,106 @@
+﻿@page
+@using TestingTutor.UI.Security
+@model TestingTutor.UI.Pages.Portal.MyCourseDetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@Model.Course.CourseName Details</h2>
+
+<div>
+    <h4>Course</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Course.CourseName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Course.CourseName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Course.Term)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Course.Term.Name)
+        </dd>
+        @if (User.Identity.IsAuthenticated)
+        {
+            var user = (System.Security.Claims.ClaimsIdentity)(User.Identity);
+            if (AuthorizeHtmlHelper.UserIsInstructorOrHigher(user))
+            {
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Course.IsArchived)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Course.IsArchived)
+                </dd>
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Course.IsPublished)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Course.IsPublished)
+                </dd>
+                <dt class="col-sm-3">Manage</dt>
+                <dd class="col-sm-9"> <a asp-page="/Courses/Edit" asp-route-id="@Model.Course.Id">Edit Course or Add/Remove Students</a></dd>
+            }
+        }
+    </dl>
+</div>
+<div>
+    @foreach (var assignment in Model.Assignments)
+    {
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#assignment_@assignment.Id">
+                            @assignment.Name
+                        </button>
+                    </h2>
+                    <div>
+                        @foreach (var t in assignment.Tags)
+                        {
+                            <span class="badge badge-secondary">
+                                @t.Tag.Name
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="assignment_@assignment.Id" class="collapse">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h1>
+                            @assignment.Name
+                        </h1>
+                    </div>
+                    <p class="lead">
+                        @assignment.Course.CourseName
+                    </p>
+                    <p class="lead">
+                        @assignment.Language.Name
+                    </p>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <form asp-page-handler="Download" asp-route-id="@assignment.Id" asp-route-documentType="AssignmentSpecification" method="post">
+                                <button class="btn btn-link">
+                                    <i class="fas fa-file-pdf"></i>
+                                    Assignment Specification
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                    <div class="mx-auto text-center">
+                        <div class="btn-group">
+                            <a class="btn btn-primary text-light" role="button" asp-page="/Submissions/Create" asp-route-id="@assignment.Id">Submit for Feedback</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div>
+        <a asp-page="./MyCourses">Back to Course List</a>
+    </div>
+</div>

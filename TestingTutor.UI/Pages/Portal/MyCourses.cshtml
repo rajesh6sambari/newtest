@@ -1,0 +1,78 @@
+﻿@page
+@model TestingTutor.UI.Pages.Portal.MyCourses
+
+@{
+    ViewData["Title"] = "Select a course";
+}
+
+<h2>Select a course</h2>
+<br/>
+@if (Model.StudentCourses.Count > 0)
+{
+    <h3>Courses where you are a Student</h3>
+
+    <table class="table">
+        <thead>
+            <a href="C:\Users\gsowm\source\repos\TestingTutor\TestingTutor.NET\TestingTutor.UI\Pages\Portal\MyCourses.cshtml">C:\Users\gsowm\source\repos\TestingTutor\TestingTutor.NET\TestingTutor.UI\Pages\Portal\MyCourses.cshtml</a>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.StudentCourses[0].CourseName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StudentCourses[0].TermName)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.StudentCourses)
+        {
+            <tr>
+                <td>
+                    <a asp-page="./MyCourseDetails" asp-route-id="@item.CourseId">@item.CourseName</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TermName)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}
+
+@if (Model.InstructorCourses.Count > 0)
+{
+    <h3>Courses where you are an Instructor</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.InstructorCourses[0].CourseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InstructorCourses[0].TermName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InstructorCourses[0].Status)
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.InstructorCourses)
+        {
+            <tr>
+                <td>
+                    <a asp-page="./MyCourseDetails" asp-route-id="@item.CourseId">@item.CourseName</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TermName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+

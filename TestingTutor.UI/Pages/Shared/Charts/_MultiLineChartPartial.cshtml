@@ -1,0 +1,91 @@
+﻿@using Newtonsoft.Json
+@model UI.DataVisuals.MultiLineChart
+
+<script type="text/javascript">
+    var model = JSON.parse('@Html.Raw(JsonConvert.SerializeObject(Model))');
+    var id = '#'.concat(model.Id);
+    var lines = model.Lines;
+    var colors = model.Colors;
+    var domain = model.Domain;
+    var minimum = model.Minimum;
+    var maximum = model.Maximum;
+
+    var $container = $(id),
+        margin = { top: 30, right: 30, bottom: 30, left: 40 },
+        width = $container.width() - margin.left - margin.right,
+        height = $container.height() - margin.top - margin.bottom,
+        min = Math.min(width, height);
+
+    var svg = d3.select(id)
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+        .attr('preserveAspectRatio', 'xMidYMax meet')
+        .append('g')
+        .attr('transform',
+            'translate(' + margin.left + ',' + margin.top + ')');
+
+
+    var x = d3.scaleLinear()
+        .domain([d3.min(domain), d3.max(domain)])
+        .range([0, width]);
+
+    var y = d3.scaleLinear()
+        .range([height, 0])
+        .domain([minimum, maximum]);
+
+    svg.append('g')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    svg.append('g')
+        .call(d3.axisLeft(y));
+
+    var data = d3.entries(lines);
+
+    console.log(data);
+
+    svg.selectAll('.line')
+        .data(data)
+        .enter()
+        .append('path')
+        .attr('fill', 'none')
+        .attr('stroke', function (d, i) {
+            console.log(colors[i]);
+            return colors[i];
+        })
+        .attr('stroke-width', 1.5)
+        .attr('d', function (d) {
+            console.log(d);
+            return d3.line().curve(d3.curveNatural)
+                .x(function(a,i) {
+                    return x(domain[i]);
+                })
+                .y(function(a) {
+                    return y(+a);
+                })
+                (d.value);
+        });
+
+    for (var index = 0; index < data.length; index++) {
+        svg.append('g')
+            .selectAll('.dot')
+            .data(data[index].value)
+            .enter()
+            .append('circle')
+            .attr('r', 4)
+            .attr('cx',
+                function(d, i) {
+                    return x(domain[i]);
+                })
+            .attr('cy',
+                function(d, i) {
+                    return y(d);
+                })
+            .attr('fill', function(d, i) {
+                return colors[index];
+            });
+    }
+    
+</script>

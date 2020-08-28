@@ -1,0 +1,50 @@
+﻿@page
+@model TestingTutor.UI.Pages.SuperAdmin.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+    <h2>Edit User Details</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ApplicationUserViewModel.UserName" />
+            <div class="form-group">
+                <label asp-for="ApplicationUserViewModel.UserName"></label>
+                <input readonly="readonly" asp-for="ApplicationUserViewModel.UserName" class="form-control" />
+                <span asp-validation-for="ApplicationUserViewModel.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group" >
+                <table class="table">
+                    <tr class="row"><td><strong>Permissions</strong></td></tr>
+                    <tr class="row">
+                        @for (int i = 0; i < Model.UserClaims.Count; ++i)
+                        {
+                        <td>
+                            @Html.CheckBoxFor(m => m.UserClaims[i].IsChecked)
+                            @Html.DisplayFor(m => m.UserClaims[i].ClaimFriendlyName)
+                            @Html.HiddenFor(x => x.UserClaims[i].ClaimName)
+                        </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary text-light" />
+                <a class="btn btn-primary text-light" role="button" asp-page="./DeleteUser" asp-route-id="@Model.ApplicationUserViewModel.UserName">Delete</a> 
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

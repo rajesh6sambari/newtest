@@ -1,0 +1,145 @@
+﻿@using TestingTutor.UI.Data.ViewModels
+@inject AssignmentFeedbackViewModel ViewModel
+@model TestingTutor.Dev.Data.Models.Feedback
+@{
+
+    string Progress(int covered, int missed)
+    {
+        var progress = (double)covered / (covered + missed);
+        progress = Math.Truncate(progress * 100.0f);
+        return progress.ToString("F0");
+    }
+}
+<h3>Detailed Feedback</h3>
+@if (Model.ClassCoverages.Count == 0)
+{
+    <p>
+        Found no class coverages.
+    </p>
+}
+else
+{
+    foreach (var classCoverage in Model.ClassCoverages)
+    {
+        <h4>Name: @classCoverage.Name</h4>
+        <h4>Name: @classCoverage.Container</h4>
+        if (classCoverage.MethodCoverages.Count > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Methods</th>
+                        <th>Lines</th>
+                        <th>Branches</th>
+                        <th>Conditionals</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var method in classCoverage.MethodCoverages.OrderBy(m => m.Name))
+                    {
+                        <tr>
+                            <td>
+                                @method.Name
+                            </td>
+                            <td>
+                                @if (method.LinesCovered + method.LinesMissed > 0 && ViewModel.LineCoverage)
+                                {
+                                    var lineProgress = Progress(method.LinesCovered, method.LinesMissed);
+                                    var nonLineProgress = Progress(method.LinesMissed, method.LinesCovered);
+                                    <div class="progress">
+                                        @if (method.LinesCovered == 0)
+                                        {
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 100%;">
+                                                0%
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(lineProgress)%;">
+                                                @lineProgress%
+                                            </div>
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(nonLineProgress)%;">
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else if (!ViewModel.LineCoverage)
+                                {
+                                    @:Coverage Not Available
+                                }
+                                else
+                                {
+                                    @:None
+                                }
+                            </td>
+                            <td>
+                                @if (method.BranchesCovered + method.BranchesMissed > 0 && ViewModel.BranchCoverage)
+                                {
+                                    var branchProgress = Progress(method.BranchesCovered, method.BranchesMissed);
+                                    var nonBranchProgress = Progress(method.BranchesMissed, method.BranchesCovered);
+                                    <div class="progress">
+                                        @if (method.BranchesCovered == 0)
+                                        {
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 100%;">
+                                                0%
+                                            </div>
+                                        }
+                                        else
+                                        {
+
+                                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(branchProgress)%;">
+                                                @branchProgress%
+                                            </div>
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(nonBranchProgress)%;">
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else if (!ViewModel.BranchCoverage)
+                                {
+                                    @:Coverage Not Available
+                                }
+                                else
+                                {
+                                    @:None
+                                }
+                            </td>
+                            <td>
+
+                                @if (method.ConditionsCovered + method.ConditionsMissed > 0 && ViewModel.ConditionCoverage)
+                                {
+                                    var conditionProgress = Progress(method.ConditionsCovered, method.ConditionsMissed);
+                                    var nonConditionProgress = Progress(method.ConditionsMissed, method.ConditionsCovered);
+                                    <div class="progress">
+                                        @if (method.ConditionsCovered == 0)
+                                        {
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 100%;">
+                                                0%
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(conditionProgress)%;">
+                                                @conditionProgress%
+                                            </div>
+                                            <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(nonConditionProgress)%;">
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else if (!ViewModel.ConditionCoverage)
+                                {
+                                    @:Coverage Not Available
+                                }
+                                else
+                                {
+                                    @:None
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+}

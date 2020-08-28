@@ -1,0 +1,280 @@
+﻿@page
+@using TestingTutor.UI.Pages.Submissions
+@model StudentFeedbackModel
+@{
+    ViewData["Title"] = "Student Feedback";
+}
+
+
+<h2>
+    @Model.Assignment.Name
+    <span style="float: right !important">
+        <a class="btn btn-light" asp-page="../Analysis/Student"
+           asp-route-id="@Model.Assignment.Id"
+           asp-route-submitter="@Model.Submission.SubmitterId">
+            Back to analysis
+        </a>
+    </span>
+</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Submission #</th>
+            <th>@Html.DisplayNameFor(model => model.Submissions[0].SubmissionDateTime)</th>
+            <th>Mode</th>
+            <th>Test Covered</th>
+            <th>Redundant Tests</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var index = 0; index < Model.Submissions.Count; ++index)
+        {
+            var submission = Model.Submissions[index];
+            <tr>
+                <td>
+                    @(index + 1)
+                </td>
+                @if (@Model.Index != @index)
+                {
+                    <td>
+                        <a asp-page="./StudentFeedback" asp-route-index="@index"
+                           asp-route-id="@Model.Assignment.Id" asp-route-submitter="@Model.Submission.SubmitterId">@submission.SubmissionDateTime</a>
+                    </td>
+                }
+                else
+                {
+                    <td class="table-primary">
+                        <a asp-page="./StudentFeedback" asp-route-index="@index"
+                           asp-route-id="@Model.Assignment.Id" asp-route-submitter="@Model.Submission.SubmitterId">@submission.SubmissionDateTime</a>
+                    </td>
+                }
+                <td>
+                    @submission.ApplicationMode
+                </td>
+                @if (submission.Feedback == null)
+                {
+                    <td colspan="2" class="text-center text-white">
+                        In progress...
+                    </td>
+                }
+                else if (submission.Feedback.EngineException != null)
+                {
+                    <td colspan="2" class="text-center bg-danger text-white">
+                        Engine threw an Exception
+                    </td>
+                }
+                else
+                {
+                    var coveregePercentage = Model.CalculateTestCoveredPercentage(submission);
+                    if (coveregePercentage < Model.MediumCoverage)
+                    {
+                        <td class="bg-danger text-white">
+                            @coveregePercentage%
+                        </td>
+                    }
+                    else if (coveregePercentage < Model.HighCoverage)
+                    {
+                        <td class="bg-warning text-white">
+                            @coveregePercentage%
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="bg-success text-white">
+                            @coveregePercentage%
+                        </td>
+                    }
+                    <td>
+                        @Model.CalculateNumberOfRedundantTest(submission)
+                    </td>
+                }
+            <td>
+                <ul class="list-inline">
+                    @if (submission.ApplicationMode == "Development Mode")
+                    {
+                        <li class="list-inline-item">
+                            <form asp-route-id="@submission.Id"
+                                  asp-route-type="Solution"
+                                  method="post">
+                                <button class="btn btn-link" type="submit">
+                                    <i class="fas fa-file-code"></i>
+                                    Solution
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    <li class="list-inline-item">
+                        <form asp-route-id="@submission.Id"
+                              asp-route-type="TestSolution"
+                              method="post">
+                            <button class="btn btn-link" type="submit">
+                                <i class="fas fa-file-code"></i>
+                                Test Solution
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br /><br />
+
+
+<div>
+    <h4>Submission # @(Model.Index + 1) Feedback - @Model.Submission.Assignment.Name - @Model.Submission.SubmissionDateTime</h4>
+    <hr />
+
+    @if (Model.Submission.Feedback == null)
+    {
+        <p>In progress...</p>
+    }
+    else if (Model.Submission.Feedback.EngineException != null)
+    {
+        <div class="bg-dark p-2 mb-5">
+            @foreach (var part in
+              ($"{Model.Submission.Feedback.EngineException.Phase}\n" +
+              $"From - {Model.Submission.Feedback.EngineException.From}\n" +
+              $"Report - \n{Model.Submission.Feedback.EngineException.Report}\n").Split('\n').ToList())
+            {
+                <code>@part</code><br />
+            }
+        </div>
+    }
+    else
+    {
+        <h3>Detail Feedback</h3>
+        foreach (var classCoverage in Model.Submission.Feedback.ClassCoverages)
+        {
+            <h4>Name: @classCoverage.Name</h4>
+            <h4>Container: @classCoverage.Container</h4>
+            if (classCoverage.MethodCoverages.Count > 0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Method
+                            </th>
+                            <th>
+                                Lines
+                            </th>
+                            <th>
+                                Branches
+                            </th>
+                            <th>
+                                Conditionals
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var method in classCoverage.MethodCoverages.OrderBy(m => m.Name))
+                        {
+                            <tr>
+                                <td>@method.Name</td>
+                                <td>
+                                    @if (method.LinesCovered + method.LinesMissed > 0)
+                                    {
+                                        var lineProgress = (double)method.LinesCovered / (method.LinesCovered + method.LinesMissed);
+                                        lineProgress = Math.Truncate(lineProgress * 100.0f) / 100;
+                                        var lineNonProgress = 1.0f - lineProgress;
+                                        lineNonProgress = Math.Truncate(lineNonProgress * 100.0f) / 100;
+                                        var lineProgressString = (lineProgress * 100.0f).ToString("F0");
+                                        var lineNonProgressString = (lineNonProgress * 100.0f).ToString("F0");
+                                        <div class="progress">
+                                            @if (Math.Abs(lineProgress) < 0.01)
+                                            {
+                                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 100%;">
+                                                    0%
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(lineProgressString)%;">
+                                                    @lineProgressString%
+                                                </div>
+                                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(lineNonProgressString)%">
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (method.BranchesCovered + method.BranchesMissed > 0)
+                                    {
+                                        var branchProgress = (double)method.BranchesCovered / (method.BranchesCovered + method.BranchesMissed);
+                                        branchProgress = Math.Truncate(branchProgress * 100.0f) / 100;
+                                        var branchNonProgress = 1.0f - branchProgress;
+                                        branchNonProgress = Math.Truncate(branchNonProgress * 100.0f) / 100;
+                                        var branchProgressString = (branchProgress * 100.0f).ToString("F0");
+                                        var branchNonProgressString = (branchNonProgress * 100.0f).ToString("F0");
+                                        <div class="progress">
+                                            @if (branchProgress < 0.01)
+                                            {
+                                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 100%;">
+                                                    0%
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(branchProgressString)%;">
+                                                    @branchProgressString%
+                                                </div>
+                                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(branchNonProgressString)%">
+                                                </div>
+
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (method.ConditionsCovered + method.ConditionsMissed > 0)
+                                    {
+                                        var conditionsProgress = (double)method.ConditionsCovered / (method.ConditionsCovered + method.ConditionsMissed);
+                                        conditionsProgress = Math.Truncate(conditionsProgress * 100.0f) / 100;
+                                        var conditionsNonProgress = 1.0f - conditionsProgress;
+                                        conditionsNonProgress = Math.Truncate(conditionsNonProgress * 100.0f) / 100;
+                                        var conditionsProgressString = (conditionsProgress * 100.0f).ToString("F0");
+                                        var conditionsNonProgressString = (conditionsNonProgress * 100.0f).ToString("F0");
+                                        <div class="progress">
+                                            @if (conditionsProgress < 0.01)
+                                            {
+                                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: 100%;">
+                                                    0%
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: @(conditionsProgressString)%;">
+                                                    @conditionsProgressString%
+                                                </div>
+                                                <div class="progress-bar bg-danger progress-bar-striped" role="progressbar" style="width: @(conditionsNonProgressString)%">
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    }
+</div>

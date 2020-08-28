@@ -1,0 +1,68 @@
+﻿@using Microsoft.EntityFrameworkCore.Internal
+@using TestingTutor.UI.Data.ViewModels
+@inject AssignmentFeedbackViewModel ViewModel
+@{
+    var uncovered = ViewModel.UncoveredInstructorTestResults()
+        .GroupBy(
+            t => t.EquivalenceClass.Split(';')[0],
+            t => t,
+            (key, g) => new {Key = key, Tests = g.ToList()});
+
+    var covered = ViewModel.CoveredInstructorTestResults()
+        .GroupBy(
+            t => t.EquivalenceClass.Split(';')[0],
+            t => t,
+            (key, g) => new {Key = key, Tests = g.ToList()});
+
+}
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <button class="btn btn-link" type="button" aria-expanded="True" data-toggle="collapse" data-target="#task_feedback">
+                Feedback
+            </button>
+        </h2>
+    </div>
+    <div id="task_feedback" class="collapse show">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h1>Open Issues</h1>
+                    @foreach (var group in uncovered)
+                    {
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h6>
+                                    <i class="far fa-md fa-square"></i>
+                                    Not all cases covered for @group.Key
+                                </h6>
+                                <ul>
+                                    @foreach (var test in group.Tests)
+                                    {
+                                        <li>
+                                            @test.EquivalenceClass.Split(';')[1]
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-sm-6">
+                    <h1>Closed Issues</h1>
+                    @foreach (var group in covered)
+                    {
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h6>
+                                    <i class="fas fa-md fa-check-square text-success"></i>
+                                    All cases covered for @group.Key
+                                </h6>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

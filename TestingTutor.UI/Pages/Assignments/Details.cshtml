@@ -1,0 +1,73 @@
+﻿@page
+@model TestingTutor.UI.Pages.Assignments.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+    <h2>Assignment Details</h2>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.Tags)
+        </dt>
+        <dd>
+            @foreach (var tag in Model.Assignment.Tags)
+            {
+                <p>@tag.Tag.Name</p>
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.AssignmentSpecification)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.AssignmentSpecification.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.Course)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.Course.CourseName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.ReferenceSolution)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.ReferenceSolution.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.ReferenceTestCasesSolutions)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.ReferenceTestCasesSolutions.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.Language)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.Language.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Assignment.TestCoverageLevel)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.TestCoverageLevel)
+        </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Assignment.RedundantTestLevel)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Assignment.Id" class="btn btn-primary text-light">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

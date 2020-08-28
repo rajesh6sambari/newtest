@@ -1,0 +1,95 @@
+﻿@using TestingTutor.UI.Data.ViewModels
+@using Microsoft.EntityFrameworkCore.Internal
+@using TestingTutor.Dev.Data.Models
+@inject AssignmentFeedbackViewModel ViewModel
+@model TestingTutor.Dev.Data.Models.Feedback
+@{
+
+    var uncovered = ViewModel.UncoveredInstructorTestResults()
+        .GroupBy(
+            t => t.EquivalenceClass.Split(';')[0],
+            t => t,
+            (key, g) => new {Key = key, Tests = g.ToList()}).ToList();
+
+    var concepts = uncovered
+        .SelectMany(x => x.Tests)
+        .SelectMany(x => x.TestResultConcepts)
+        .Distinct((x, y) => x.TestConcept.Id == y.TestConcept.Id)
+        .Select(x => x.TestConcept)
+        .ToList();
+
+    string Anchor(TestConcept concept)
+    {
+        return $"a_{concept.Id}";
+    }
+}
+<h3>Conceptual Feedback</h3>
+@foreach (var concept in concepts)
+{
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" aria-expanded="True" data-toggle="collapse" data-target="#@Anchor(concept)">
+                            @concept.Name
+                        </button>
+                    </h2>
+                </div>
+                <div>
+                    <p>
+                        @concept.ConceptualContent
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="@Anchor(concept)" class="collapse show">
+            <div class="card-body">
+                @Html.Raw(concept.DetailedContent)
+            </div>
+        </div>
+    </div>
+}
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h2>Open Issues</h2>
+        </div>
+        <div class="col-6">
+            Closed
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            @foreach (var result in Model.InstructorTestResults.Where(x => x.TestCaseStatus.Name == "Uncovered"))
+            {
+                <div class="row">
+                    <div class="col-1">
+                        <i class="far fa-2x fa-square"></i>
+                    </div>
+                    <div class="col-11">
+                        <div class="border p-3">
+                            @result.EquivalenceClass
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-6">
+            @foreach (var result in Model.InstructorTestResults.Where(x => x.TestCaseStatus.Name != "Uncovered"))
+            {
+                <div class="row">
+                    <div class="col-1">
+                        <i class="fas fa-2x fa-check-square text-success"></i>
+                    </div>
+                    <div class="col-11">
+                        <div class="border p-3">
+                            @result.EquivalenceClass
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

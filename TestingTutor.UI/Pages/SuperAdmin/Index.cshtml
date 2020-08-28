@@ -1,0 +1,46 @@
+﻿@page
+@model TestingTutor.UI.Pages.SuperAdmin.UserManagementModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2>User Management</h2>
+
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+@if (Model.EditMessage != null)
+{
+    <p><h3 style="color: Red">@Model.EditMessage</h3></p>
+}
+
+<table class="table table-responsive table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    @if (@Model.Users.Count == 0)
+    {
+        <tr>
+            <td colspan="3" class="text-center">
+                No User Accounts
+            </td>
+        </tr>
+    }
+    else
+    {
+        foreach (var user in @Model.Users)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.FirstName @user.LastName</td> 
+                <td>@user.Email</td>
+                <td>
+                    <a class="btn btn-primary text-light" asp-page="./Edit" asp-route-id="@user.UserName">Edit</a>
+                    <a class="btn btn-primary text-light" asp-page="./Details" asp-route-id="@user.UserName">Details</a>
+                </td>
+            </tr>
+        }
+    }
+</table>
+

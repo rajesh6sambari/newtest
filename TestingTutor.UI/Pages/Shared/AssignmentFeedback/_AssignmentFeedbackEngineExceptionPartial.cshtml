@@ -1,0 +1,13 @@
+﻿@model TestingTutor.Dev.Data.Models.EngineException
+@{
+    var report = $"{Model.Phase}\n" +
+                 $"From - {Model.From}\n" +
+                 $"Report - \n" +
+                 $"{Model.Report}";
+}
+<div class="bg-dark p-2 mb-5">
+    @foreach (var part in report.Split('\n'))
+    {
+        <code>@part</code><br />
+    }
+</div>

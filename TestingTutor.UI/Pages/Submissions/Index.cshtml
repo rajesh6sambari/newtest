@@ -1,0 +1,57 @@
+﻿@page
+@model TestingTutor.UI.Pages.Submissions.IndexModel
+
+@{
+    ViewData["Title"] = "My Feedback";
+}
+
+<h2>My Feedback</h2>
+<br/>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Submission[0].Assignment.Course)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Submission[0].Assignment)
+        </th>
+        <th>
+            Last Submission
+        </th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Submission) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Assignment.Course.CourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Assignment.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubmissionDateTime)
+            </td>
+            <td>
+                @if (item.Feedback != null)
+                {
+                    <a asp-page="./AssignmentFeedback" asp-route-id="@item.AssignmentId"
+                       asp-route-index="@Model.GetIndex(item)">View Feedback</a>
+                }
+                else
+                {
+                    <span>In progress...</span>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/submission.js"></script>
+}

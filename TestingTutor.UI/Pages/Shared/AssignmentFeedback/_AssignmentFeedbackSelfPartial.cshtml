@@ -1,0 +1,74 @@
+﻿@using Microsoft.EntityFrameworkCore.Internal
+@using TestingTutor.Dev.Data.Models
+@using TestingTutor.UI.Data.ViewModels
+@inject AssignmentFeedbackViewModel ViewModel
+@{
+    var groupTest = ViewModel.Submission.Feedback
+        .InstructorTestResults.GroupBy(
+            t => t.EquivalenceClass.Split(';')[0],
+            t => t,
+            (key, g) => new { Key = key, Tests = g.ToList() }).ToList();
+
+    var failedTest =
+        groupTest
+            .Where(g => g.Tests.Count() > g.Tests.SelectMany(x => x.StudentTestResults).Distinct((x, y) => x.TestName == y.TestName).Count() ||
+                        g.Tests.Any(x => !x.StudentTestResults.Any())).ToList();
+
+    var successTest = groupTest
+        .Where(g => !(g.Tests.Count() > g.Tests.SelectMany(x => x.StudentTestResults).Distinct((x, y) => x.TestName == y.TestName).Count() ||
+                      g.Tests.Any(x => !x.StudentTestResults.Any()))).ToList();
+
+    var concepts = failedTest
+        .SelectMany(x => x.Tests)
+        .SelectMany(x => x.TestResultConcepts)
+        .Distinct((x, y) => x.TestConcept.Id == y.TestConcept.Id)
+        .Select(x => x.TestConcept)
+        .ToList();
+
+    string Anchor(TestConcept concept) => $"a_concept_{concept.Id}";
+}
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <button class="btn btn-link" aria-expanded="True" type="button" data-toggle="collapse" data-target="#process_feedback">
+                Feedback
+            </button>
+        </h2>
+    </div>
+    <div id="process_feedback" class="collapse show">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    Learning Concept(s):&nbsp;&nbsp;@if (concepts.Count == 0) {<strong>None</strong>}
+                    @foreach (var concept in concepts)
+                    {
+                        <a class="btn btn-primary" href="#@Anchor(concept)" data-toggle="modal" data-target="#@Anchor(concept)">
+                            @concept.ConceptualContent
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@foreach (var concept in concepts)
+{
+    <div class="modal fade bd-example-modal-lg" id="@Anchor(concept)" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">@Html.Raw(concept.ConceptualContent)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @Html.Raw(concept.ConceptualContent)<br />@Html.Raw(concept.DetailedContent)
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

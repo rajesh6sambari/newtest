@@ -1,0 +1,124 @@
+﻿@page
+@using Newtonsoft.Json
+@using UI.Pages.Analysis
+@model CourseModel
+@{
+    ViewData["Title"] = "Analysis";
+}
+
+
+<form asp-page-handler="Download" asp-route-id="@Model.Assignment.Id" method="post">
+    <h2>
+        @Model.Assignment.Name
+        <span style="float: right !important">
+            @if (Model.HasData)
+            {
+                <button class="btn btn-light">Download Csv</button>
+            }
+        </span>
+    </h2>
+</form>
+
+
+<hr />
+@if (Model.HasData)
+{
+    <table class="table">
+        <thread>
+            <tr>
+                <th>Key</th>
+                <th>Color</th>
+            </tr>
+        </thread>
+        <tbody>
+            @for (var i = 0; i < Model.CourseCharts.Labels.Count; ++i)
+            {
+                <tr>
+                    <td>
+                        @Model.CourseCharts.Labels[i]
+                    </td>
+                    <td style="width: 50px; height: 50px; background-color: @Model.CourseCharts.Colors[i]"></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>
+        Line Coverage
+    </h3>
+    <hr />
+    <div id="@Model.CourseCharts.LineCoverageChart.Id" style="min-width: 300px; min-height: 300px;">
+
+    </div>
+    <h3>
+        Branch Coverage
+    </h3>
+    <hr />
+    <div id="@Model.CourseCharts.BranchCoverageChart.Id" style="min-width: 300px; min-height: 300px;">
+
+    </div>
+    <h3>
+        Conditional Coverage
+    </h3>
+    <hr />
+    <div id="@Model.CourseCharts.ConditionalCoverageChart.Id" style="min-width: 300px; min-height: 300px;">
+
+    </div>
+
+    <h3>
+        Redundant Test 
+    </h3>
+    <hr/>
+    <div id="@Model.CourseCharts.RedundantTestChart.Id" style="min-width: 300px; min-height: 300px;">
+
+    </div>
+
+    @await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.LineCoverageChart)
+    @await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.BranchCoverageChart)
+    @await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.ConditionalCoverageChart)
+    @await Html.PartialAsync("Shared/Charts/_MultiLineChartPartial", Model.CourseCharts.RedundantTestChart)
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @foreach (var s in Model.Submitters)
+                {
+                <tr>
+                    <td>
+                        @s
+                    </td>
+                    <td>
+                        <a asp-page="./Student" asp-route-id="@Model.Assignment.Id" asp-route-submitter="@s">
+                            Analysis
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+
+        @section Scripts
+            {
+            @{
+                await Html.RenderPartialAsync("Shared/_ValidationScriptsPartial");
+            }
+
+
+
+        }
+    }
+    else
+    {
+        <p>No Data</p>
+    }
+
+<div>
+    <a asp-page="/Assignments/Index">Back to List</a>
+</div>

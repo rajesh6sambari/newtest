@@ -1,0 +1,77 @@
+﻿@using TestingTutor.UI.Data.ViewModels
+@using TestingTutor.UI.DataVisuals
+@inject AssignmentFeedbackViewModel ViewModel
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <button class="btn btn-link" aria-expanded="True" type="button" data-toggle="collapse" data-target="#coverage_redundant">
+                Coverage and Redundant Tests
+            </button>
+        </h2>
+    </div>
+    <div id="coverage_redundant">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1>Coverage</h1>
+                    @{
+                        var coverageChart = ViewModel.GetCoverageChart();
+                    }
+                    <ul class="list-inline">
+                        @foreach (var line in coverageChart.Lines)
+                        {
+                            <li class="list-inline-item">
+                                @line.Label
+                                <i class="fas fa-wave-square" style="color: @line.Color;"></i>
+                            </li>
+                        }
+                        <li class="list-inline-item">
+                            Threshold Goal
+                            <i class="fas fa-wave-square" style="color: @coverageChart.ThresholdLine.Color;"></i>
+                        </li>
+                        <li class="list-inline-item">
+                            Current Submission
+                            <i class="fas fa-minus" data-fa-transform="rotate-90" style="color: @coverageChart.MarkColor;"></i>
+                        </li>
+                    </ul>
+                    <div class="container">
+                        <div id="@coverageChart.Id" style="min-width: 300px; min-height: 300px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @await Html.PartialAsync("Shared/Charts/_ThresholdMultiLineChartPartial", coverageChart)
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1>Redundant Tests</h1>
+                    @{
+                        var redundantChart = ViewModel.GetRedundantChart();
+                    }
+                <ul class="list-inline">
+                    @foreach (var line in redundantChart.Lines)
+                    {
+                        <li class="list-inline-item">
+                            @line.Label
+                            <i class="fas fa-wave-square" style="color: @line.Color;"></i>
+                        </li>
+                    }
+                    <li class="list-inline-item">
+                        Max Threshold (stay under this line)
+                        <i class="fas fa-wave-square" style="color: @redundantChart.ThresholdLine.Color;"></i>
+                    </li>
+                    <li class="list-inline-item">
+                        Current Submission
+                        <i class="fas fa-minus" data-fa-transform="rotate-90" style="color: @redundantChart.MarkColor;"></i>
+                    </li>   
+                </ul>
+                    <div class="container">
+                        <div id="@redundantChart.Id" style="min-width: 300px; min-height: 300px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @await Html.PartialAsync("Shared/Charts/_ThresholdMultiLineChartPartial", redundantChart)
+        </div>
+    </div>
+</div>
