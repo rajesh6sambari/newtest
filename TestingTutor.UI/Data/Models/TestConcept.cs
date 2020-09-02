@@ -15,5 +15,7 @@ namespace TestingTutor.UI.Data.Models
         [Display(Name="Detailed Concept")]
         public string DetailedContent { get; set; }
         public ICollection<TestResultConcept> TestResultConcepts { get; set; }
+
+        public bool IsDevelopment { get; set; }
     }
 }

@@ -8,39 +8,6 @@
 
   <ItemGroup>
     <Compile Remove="Data\ApplicationDbContext.cs" />
-    <Compile Remove="Data\Models\ApplicationMode.cs" />
-    <Compile Remove="Data\Models\ApplicationUser.cs" />
-    <Compile Remove="Data\Models\Assignment.cs" />
-    <Compile Remove="Data\Models\AssignmentApplicationMode.cs" />
-    <Compile Remove="Data\Models\AssignmentCoverageTypeOption.cs" />
-    <Compile Remove="Data\Models\AssignmentSpecification.cs" />
-    <Compile Remove="Data\Models\AssignmentTag.cs" />
-    <Compile Remove="Data\Models\AssignmentVisibilityProtectionLevel.cs" />
-    <Compile Remove="Data\Models\ClassCoverage.cs" />
-    <Compile Remove="Data\Models\Course.cs" />
-    <Compile Remove="Data\Models\CoverageTypeOption.cs" />
-    <Compile Remove="Data\Models\Difficulty.cs" />
-    <Compile Remove="Data\Models\EngineException.cs" />
-    <Compile Remove="Data\Models\Feedback.cs" />
-    <Compile Remove="Data\Models\FeedbackLevelOption.cs" />
-    <Compile Remove="Data\Models\Institution.cs" />
-    <Compile Remove="Data\Models\InstructorAssignment.cs" />
-    <Compile Remove="Data\Models\InstructorCourse.cs" />
-    <Compile Remove="Data\Models\InstructorTestResult.cs" />
-    <Compile Remove="Data\Models\Language.cs" />
-    <Compile Remove="Data\Models\MethodCoverage.cs" />
-    <Compile Remove="Data\Models\ReferenceSolution.cs" />
-    <Compile Remove="Data\Models\ReferenceTestCasesSolutions.cs" />
-    <Compile Remove="Data\Models\StudentAssignment.cs" />
-    <Compile Remove="Data\Models\StudentCourse.cs" />
-    <Compile Remove="Data\Models\StudentTestResult.cs" />
-    <Compile Remove="Data\Models\Submission.cs" />
-    <Compile Remove="Data\Models\Tag.cs" />
-    <Compile Remove="Data\Models\Term.cs" />
-    <Compile Remove="Data\Models\TestCaseStatus.cs" />
-    <Compile Remove="Data\Models\TestConcept.cs" />
-    <Compile Remove="Data\Models\TestingTypeOption.cs" />
-    <Compile Remove="Data\Models\TestResultConcept.cs" />
     <Compile Remove="Migrations\20190513234105_AddedAssignmentIdToFeedback.cs" />
     <Compile Remove="Migrations\20190513234105_AddedAssignmentIdToFeedback.Designer.cs" />
     <Compile Remove="Pages\SuperAdmin\Register.cshtml.cs" />
@@ -88,7 +55,6 @@
   <ItemGroup>
     <Folder Include="Constants\" />
     <Folder Include="Annotations\" />
-    <Folder Include="Data\Models\" />
     <Folder Include="Pages\Shared\AssignmentFeedback\" />
     <Folder Include="TestingTutor\UI\Data\" />
     <Folder Include="wwwroot\lib\chosen\dist\css\docsupport\" />

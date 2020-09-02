@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using TestingTutor.UI.Data.Models;
 using TestingTutor.Dev.Data.Models;
+using AssignmentApplicationMode = TestingTutor.UI.Data.Models.AssignmentApplicationMode;
 
 namespace TestingTutor.Models
 {
