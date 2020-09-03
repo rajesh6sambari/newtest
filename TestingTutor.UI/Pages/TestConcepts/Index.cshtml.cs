@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,7 +23,7 @@ namespace TestingTutor.UI.Pages.TestConcepts
 
         public async Task OnGetAsync()
         {
-            TestConcept = await _context.TestConcepts.ToListAsync();
+            TestConcept = await _context.TestConcepts.Where(c => c.IsDevelopment.Equals(false)).ToListAsync();
         }
     }
 }
